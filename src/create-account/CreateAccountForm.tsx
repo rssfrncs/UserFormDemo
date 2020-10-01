@@ -44,7 +44,7 @@ export function CreateAccountForm() {
   return (
     <Stack spacing={6} as="form">
       <Box>
-        <Username />
+        <Username key={state.form.username} />
       </Box>
       <FormControl>
         <Input
@@ -129,6 +129,8 @@ function Username() {
     [update]
   );
   const debouncedCheckUsername = React.useMemo(
+    // 333ms is a good user wait timing
+    // i was lazy and didn't write my own debounce implementation!
     () => debounce(checkUsername, 333),
     [checkUsername]
   );
