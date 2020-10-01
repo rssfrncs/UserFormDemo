@@ -98,6 +98,7 @@ export function reducer(state: State, event: Event): State {
         draft.form.password = "";
         draft.form.telephone = "";
         draft.form.terms = false;
+        draft.form.dirty = false;
         break;
       }
       case "account submitted": {

@@ -135,6 +135,9 @@ function Username() {
     [checkUsername]
   );
   React.useEffect(() => {
+    set(state.form.username)
+  }, [state.form.username])
+  React.useEffect(() => {
     if (usernameIsValid(draftUsername)) debouncedCheckUsername(draftUsername);
   }, [draftUsername, debouncedCheckUsername]);
   return (
