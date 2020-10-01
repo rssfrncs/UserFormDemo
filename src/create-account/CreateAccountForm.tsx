@@ -134,7 +134,7 @@ function Username() {
   );
   React.useEffect(() => {
     if (usernameIsValid(draftUsername)) debouncedCheckUsername(draftUsername);
-  }, [draftUsername]);
+  }, [draftUsername, debouncedCheckUsername]);
   return (
     <FormControl>
       <InputGroup>
