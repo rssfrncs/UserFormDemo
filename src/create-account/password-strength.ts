@@ -6,5 +6,13 @@
  * See unit tests for examples
  */
 export function passwordStrength(password: string): number {
-  return 0;
+  let score = 0;
+  score += Math.min(password.length, 5);
+  score += password
+    .split("")
+    .reduce<string[]>(
+      (uniq, char) => (uniq.includes(char) ? uniq : [...uniq, char]),
+      []
+    ).length;
+  return score;
 }

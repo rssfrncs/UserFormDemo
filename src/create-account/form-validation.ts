@@ -9,5 +9,8 @@ export function passwordIsValid(password: string): boolean {
 }
 
 export function telephoneIsValid(telephone: string): boolean {
-  return telephone.trim().length > 5;
+  return (
+    telephone.trim().length > 5 &&
+    telephone.split("").every((digit) => !isNaN(parseInt(digit)))
+  );
 }
