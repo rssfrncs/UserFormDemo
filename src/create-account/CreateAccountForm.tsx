@@ -44,7 +44,7 @@ export function CreateAccountForm() {
   return (
     <Stack spacing={6} as="form">
       <Box>
-        <Username key={state.form.username} />
+        <Username />
       </Box>
       <FormControl>
         <Input
