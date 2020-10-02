@@ -93,9 +93,6 @@ export function CreateAccountForm() {
       <Divider />
 
       <Stack direction="row" align="center" justify="flex-end">
-        {state.form.submitting ? (
-          <CircularProgress isIndeterminate color="#2f8a53" />
-        ) : null}
         <Button
           alignSelf="flex-end"
           rightIcon="arrow-forward"
@@ -103,6 +100,8 @@ export function CreateAccountForm() {
           size="lg"
           isDisabled={unsubmitable}
           onClick={submit}
+          isLoading={state.form.submitting}
+          loadingText="Submitting"
         >
           Submit form
         </Button>
