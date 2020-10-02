@@ -159,7 +159,10 @@ function Username() {
           id="username"
           value={draftUsername}
           isDisabled={username.checking}
-          isInvalid={username.dirty && !usernameIsValid(draftUsername)}
+          isInvalid={
+            (username.dirty && !usernameIsValid(draftUsername)) ||
+            !username.available
+          }
           onChange={(e: any) => void set(e.target.value)}
         />
         <InputRightElement>
