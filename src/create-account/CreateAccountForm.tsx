@@ -160,8 +160,8 @@ function Username() {
           value={draftUsername}
           isDisabled={username.checking}
           isInvalid={
-            (username.dirty && !usernameIsValid(draftUsername)) ||
-            !username.available
+            username.dirty &&
+            (!usernameIsValid(draftUsername) || !username.available)
           }
           onChange={(e: any) => void set(e.target.value)}
         />
