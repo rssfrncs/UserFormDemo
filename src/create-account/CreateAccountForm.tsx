@@ -244,20 +244,22 @@ function ErrorLog() {
     },
   } = React.useContext(AppState);
   const errors = React.useMemo(() => {
-    const errors: string[] = [];
+    const _errors: string[] = [];
     if (username.dirty && !username.available)
-      errors.push(
+      _errors.push(
         "Your username is not available please choose a different username."
       );
     if (username.dirty && !usernameIsValid(username.value))
-      errors.push("Your username is not valid please try a longer username");
+      _errors.push("Your username is not valid please try a longer username");
     if (telephone.dirty && !telephoneIsValid(telephone.value))
-      errors.push(
+      _errors.push(
         "Your telephone is not valid please make sure it is numerical and has at least 5 digits."
       );
     if (password.dirty && !passwordIsValid(password.value))
-      errors.push("Your password is not valid please try a stronger password.");
-    return errors;
+      _errors.push(
+        "Your password is not valid please try a stronger password."
+      );
+    return _errors;
   }, [username, telephone, password]);
   return errors.length ? (
     <Box bg="tomato" w="100%" p={4} color="white">
