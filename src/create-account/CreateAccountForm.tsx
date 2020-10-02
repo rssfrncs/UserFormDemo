@@ -6,9 +6,12 @@ import {
   Divider,
   FormControl,
   Icon,
+  IconButton,
   Input,
   InputGroup,
+  InputLeftElement,
   InputRightAddon,
+  InputRightElement,
   Stack,
 } from "@chakra-ui/core";
 import React from "react";
@@ -47,33 +50,24 @@ export function CreateAccountForm() {
         <Username />
       </Box>
       <FormControl>
-        <Input
-          placeholder="Telephone"
-          value={state.form.telephone}
-          isInvalid={
-            state.form.dirty && !telephoneIsValid(state.form.telephone)
-          }
-          onChange={(e: any) =>
-            void update({
-              type: "telephone field input",
-              telephone: e.target.value,
-            })
-          }
-        />
+        <InputGroup>
+          <Input
+            placeholder="Telephone"
+            value={state.form.telephone}
+            isInvalid={
+              state.form.dirty && !telephoneIsValid(state.form.telephone)
+            }
+            onChange={(e: any) =>
+              void update({
+                type: "telephone field input",
+                telephone: e.target.value,
+              })
+            }
+          />
+        </InputGroup>
       </FormControl>
       <FormControl>
-        <Input
-          placeholder="Password"
-          type="password"
-          value={state.form.password}
-          isInvalid={state.form.dirty && !passwordIsValid(state.form.password)}
-          onChange={(e: any) =>
-            void update({
-              type: "password field input",
-              password: e.target.value,
-            })
-          }
-        />
+        <Password />
       </FormControl>
       <FormControl>
         <Checkbox
@@ -150,20 +144,44 @@ function Username() {
           isInvalid={state.form.dirty && !usernameIsValid(draftUsername)}
           onChange={(e: any) => void set(e.target.value)}
         />
-        <InputRightAddon
-          children={
-            state.form.checkingUsername ? (
-              <CircularProgress isIndeterminate size="10px" />
-            ) : !state.form.dirty ? (
-              <Icon name="minus" />
-            ) : state.form.usernameIsAvailable ? (
-              <Icon name="check-circle" color="#2f8a53" />
-            ) : (
-              <Icon name="not-allowed" color="#e22043" />
-            )
-          }
-        />
+        <InputRightElement>
+          {state.form.checkingUsername ? (
+            <CircularProgress isIndeterminate size="10px" />
+          ) : !state.form.dirty ? null : state.form.usernameIsAvailable ? (
+            <Icon name="check-circle" color="#2f8a53" />
+          ) : (
+            <Icon name="not-allowed" color="#e22043" />
+          )}
+        </InputRightElement>
       </InputGroup>
     </FormControl>
+  );
+}
+
+function Password() {
+  const { state, update } = React.useContext(AppState);
+  const [showPassword, toggle] = React.useReducer((show) => !show, false);
+  return (
+    <InputGroup>
+      <Input
+        isInvalid={state.form.dirty && !passwordIsValid(state.form.password)}
+        onChange={(e: any) =>
+          void update({
+            type: "password field input",
+            password: e.target.value,
+          })
+        }
+        type={showPassword ? "text" : "password"}
+        placeholder="Password"
+      />
+      <InputRightElement>
+        <IconButton
+          variant="ghost"
+          onClick={toggle}
+          icon={showPassword ? "view" : "view-off"}
+          aria-label="password visibility toggle"
+        />
+      </InputRightElement>
+    </InputGroup>
   );
 }
