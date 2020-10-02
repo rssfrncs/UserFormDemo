@@ -135,8 +135,8 @@ function Username() {
     [checkUsername]
   );
   React.useEffect(() => {
-    set(state.form.username)
-  }, [state.form.username])
+    set(state.form.username);
+  }, [state.form.username]);
   React.useEffect(() => {
     if (usernameIsValid(draftUsername)) debouncedCheckUsername(draftUsername);
   }, [draftUsername, debouncedCheckUsername]);
@@ -155,6 +155,8 @@ function Username() {
           children={
             state.form.checkingUsername ? (
               <CircularProgress isIndeterminate size="10px" />
+            ) : !state.form.dirty ? (
+              <Icon name="minus" />
             ) : state.form.usernameIsAvailable ? (
               <Icon name="check-circle" color="#2f8a53" />
             ) : (
