@@ -96,8 +96,6 @@ export function CreateAccountForm() {
         </Checkbox>
       </FormControl>
 
-      <Divider />
-
       <ErrorLog />
 
       <Divider />
