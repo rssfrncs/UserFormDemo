@@ -9,8 +9,6 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputLeftElement,
-  InputRightAddon,
   InputRightElement,
   Stack,
 } from "@chakra-ui/core";
@@ -131,7 +129,7 @@ function Username() {
     set(state.form.username);
   }, [state.form.username]);
   React.useEffect(() => {
-    if (usernameIsValid(draftUsername)) debouncedCheckUsername(draftUsername);
+    debouncedCheckUsername(draftUsername);
   }, [draftUsername, debouncedCheckUsername]);
   return (
     <FormControl>
