@@ -9,6 +9,7 @@ import {
   IconButton,
   Input,
   InputGroup,
+  InputLeftElement,
   InputRightElement,
   Stack,
   Tooltip,
@@ -25,11 +26,8 @@ import {
 } from "./form-validation";
 
 export function CreateAccountForm() {
-  const {
-    state,
-    update,
-  } = React.useContext(AppState);
-  const { form } = state
+  const { state, update } = React.useContext(AppState);
+  const { form } = state;
   const unsubmitable = React.useMemo(() => selectIsUnsubmitable(state), [
     state,
   ]);
@@ -54,6 +52,15 @@ export function CreateAccountForm() {
       </Box>
       <FormControl>
         <InputGroup>
+          <InputLeftElement>
+            <Tooltip
+              aria-label="Valid telephone numbers are numeric and greater than 5 digits"
+              label="Valid telephone numbers are numeric and greater than 5 digits."
+              placement="left"
+            >
+              <Icon name="phone" />
+            </Tooltip>
+          </InputLeftElement>
           <Input
             placeholder="Telephone"
             value={form.telephone.value}
@@ -144,6 +151,9 @@ function Username() {
   return (
     <FormControl>
       <InputGroup>
+        <InputLeftElement>
+          <Icon name="question-outline" />
+        </InputLeftElement>
         <Input
           placeholder="Username"
           id="username"
@@ -188,6 +198,15 @@ function Password() {
   const [showPassword, toggle] = React.useReducer((show) => !show, false);
   return (
     <InputGroup>
+      <InputLeftElement>
+        <Tooltip
+          aria-label="A strong password is a mixture of unique characters and a minimum length"
+          label="A strong password is a mixture of unique characters and a minimum length."
+          placement="left"
+        >
+          <Icon name="question-outline" />
+        </Tooltip>
+      </InputLeftElement>
       <Input
         isInvalid={password.dirty && !passwordIsValid(password.value)}
         onChange={(e: any) =>
