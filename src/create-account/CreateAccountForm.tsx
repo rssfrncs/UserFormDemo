@@ -13,6 +13,8 @@ import {
   InputRightElement,
   Stack,
   Tooltip,
+  List,
+  ListItem,
 } from "@chakra-ui/core";
 import React from "react";
 import { fakeServer } from "./fake-server-api";
@@ -93,6 +95,10 @@ export function CreateAccountForm() {
           I agree to the terms and conditions
         </Checkbox>
       </FormControl>
+
+      <Divider />
+
+      <ErrorLog />
 
       <Divider />
 
@@ -231,4 +237,37 @@ function Password() {
       </InputRightElement>
     </InputGroup>
   );
+}
+
+function ErrorLog() {
+  const {
+    state: {
+      form: { username, telephone, password },
+    },
+  } = React.useContext(AppState);
+  const errors = React.useMemo(() => {
+    const errors: string[] = [];
+    if (username.dirty && !username.available)
+      errors.push(
+        "Your username is not available please choose a different username."
+      );
+    if (username.dirty && !usernameIsValid(username.value))
+      errors.push("Your username is not valid please try a longer username");
+    if (telephone.dirty && !telephoneIsValid(telephone.value))
+      errors.push(
+        "Your telephone is not valid please make sure it is numerical and has at least 5 digits."
+      );
+    if (password.dirty && !passwordIsValid(password.value))
+      errors.push("Your password is not valid please try a stronger password.");
+    return errors;
+  }, [username, telephone, password]);
+  return errors.length ? (
+    <Box bg="tomato" w="100%" p={4} color="white">
+      <List styleType="disc">
+        {errors.map((error) => (
+          <ListItem key={error}>{error}</ListItem>
+        ))}
+      </List>
+    </Box>
+  ) : null;
 }
