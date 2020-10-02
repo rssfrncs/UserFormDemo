@@ -67,7 +67,8 @@ export function CreateAccountForm() {
             placeholder="Telephone"
             value={form.telephone.value}
             isInvalid={
-              form.telephone.dirty && !telephoneIsValid(form.telephone.value)
+              form.telephone.dirty &&
+              !telephoneIsValid(form.telephone.value).valid
             }
             onChange={(e: any) =>
               void update({
@@ -150,7 +151,8 @@ function Username() {
     set(username.value);
   }, [username.value]);
   React.useEffect(() => {
-    if (usernameIsValid(draftUsername)) debouncedCheckUsername(draftUsername);
+    if (usernameIsValid(draftUsername).valid)
+      debouncedCheckUsername(draftUsername);
   }, [draftUsername, debouncedCheckUsername]);
   return (
     <FormControl>
@@ -171,7 +173,7 @@ function Username() {
           isDisabled={username.checking}
           isInvalid={
             username.dirty &&
-            (!usernameIsValid(draftUsername) || !username.available)
+            (!usernameIsValid(draftUsername).valid || !username.available)
           }
           onChange={(e: any) => void set(e.target.value)}
         />
@@ -221,7 +223,7 @@ function Password() {
         </Tooltip>
       </InputLeftElement>
       <Input
-        isInvalid={password.dirty && !passwordIsValid(password.value)}
+        isInvalid={password.dirty && !passwordIsValid(password.value).valid}
         onChange={(e: any) =>
           void update({
             type: "password field input",
@@ -255,16 +257,15 @@ function ErrorLog() {
       _errors.push(
         "Your username is not available please choose a different username."
       );
-    if (username.dirty && !usernameIsValid(username.value))
-      _errors.push("Your username is not valid please try a longer username");
-    if (telephone.dirty && !telephoneIsValid(telephone.value))
-      _errors.push(
-        "Your telephone is not valid please make sure it is numerical and has at least 5 digits."
-      );
-    if (password.dirty && !passwordIsValid(password.value))
-      _errors.push(
-        "Your password is not valid please try a stronger password."
-      );
+    const usernameValidation = usernameIsValid(username.value);
+    if (username.dirty && !usernameValidation.valid)
+      _errors.push(usernameValidation.reason);
+    const telephoneValidation = telephoneIsValid(telephone.value);
+    if (telephone.dirty && !telephoneValidation.valid)
+      _errors.push(telephoneValidation.reason);
+    const passwordValidation = passwordIsValid(password.value);
+    if (password.dirty && !passwordValidation.valid)
+      _errors.push(passwordValidation.reason);
     return _errors;
   }, [username, telephone, password]);
   return errors.length ? (
