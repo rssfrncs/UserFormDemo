@@ -157,8 +157,8 @@ function Username() {
       <InputGroup>
         <InputLeftElement>
           <Tooltip
-            aria-label="Usernames must be unique and a minimum length."
-            label="Usernames must be unique and a minimum length."
+            aria-label="Usernames must be unique and greater than 5 characters."
+            label="Usernames must be unique and greater than 5 characters."
             placement="left"
           >
             <Icon name="question-outline" />
