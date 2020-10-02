@@ -7,14 +7,19 @@ import {
 
 export type View = "create" | "success";
 
+type Field = {
+  value: string;
+  dirty: boolean;
+};
+
 export type State = {
   form: {
-    dirty: boolean;
-    usernameIsAvailable: boolean;
-    username: string;
-    checkingUsername: boolean;
-    telephone: string;
-    password: string;
+    username: Field & {
+      available: boolean;
+      checking: boolean;
+    };
+    password: Field;
+    telephone: Field;
     terms: boolean;
     submitting: boolean;
   };
@@ -64,13 +69,13 @@ export function reducer(state: State, event: Event): State {
   return produce(state, (draft) => {
     switch (event.type) {
       case "password field input": {
-        if (!draft.form.dirty) draft.form.dirty = true;
-        draft.form.password = event.password;
+        if (!draft.form.password.dirty) draft.form.password.dirty = true;
+        draft.form.password.value = event.password;
         break;
       }
       case "telephone field input": {
-        if (!draft.form.dirty) draft.form.dirty = true;
-        draft.form.telephone = event.telephone;
+        if (!draft.form.telephone.dirty) draft.form.telephone.dirty = true;
+        draft.form.telephone.value = event.telephone;
         break;
       }
       case "terms checkbox clicked": {
@@ -82,14 +87,16 @@ export function reducer(state: State, event: Event): State {
         // annoying that TS narrows view to "success" but is unable
         // to type the discriminate union allowing draft.user...
         if (draft.view === "success") {
-          draft.username = state.form.username;
+          draft.username = state.form.username.value;
         }
         draft.form.submitting = false;
-        draft.form.username = "";
-        draft.form.password = "";
-        draft.form.telephone = "";
+        draft.form.username.value = "";
+        draft.form.username.dirty = false;
+        draft.form.password.value = "";
+        draft.form.password.dirty = false;
+        draft.form.telephone.value = "";
+        draft.form.telephone.dirty = false;
         draft.form.terms = false;
-        draft.form.dirty = false;
         break;
       }
       case "account submitted": {
@@ -97,14 +104,14 @@ export function reducer(state: State, event: Event): State {
         break;
       }
       case "checking username": {
-        draft.form.checkingUsername = true;
+        draft.form.username.checking = true;
         break;
       }
       case "username checked": {
-        if (!draft.form.dirty) draft.form.dirty = true;
-        draft.form.usernameIsAvailable = event.available;
-        draft.form.checkingUsername = false;
-        draft.form.username = event.username;
+        if (!draft.form.username.dirty) draft.form.username.dirty = true;
+        draft.form.username.available = event.available;
+        draft.form.username.checking = false;
+        draft.form.username.value = event.username;
         break;
       }
       default: {
@@ -116,12 +123,20 @@ export function reducer(state: State, event: Event): State {
 
 export const defaultState = (): State => ({
   form: {
-    dirty: false,
-    checkingUsername: false,
-    usernameIsAvailable: false,
-    username: "",
-    password: "",
-    telephone: "",
+    username: {
+      value: "",
+      dirty: false,
+      checking: false,
+      available: false,
+    },
+    password: {
+      value: "",
+      dirty: false,
+    },
+    telephone: {
+      value: "",
+      dirty: false,
+    },
     terms: false,
     submitting: false,
   },
@@ -129,14 +144,16 @@ export const defaultState = (): State => ({
 });
 
 export function selectIsUnsubmitable(state: State): boolean {
+  const {
+    form: { submitting, terms, username, password, telephone },
+  } = state;
   return (
-    !state.form.dirty ||
-    state.form.submitting ||
-    !state.form.terms ||
-    !usernameIsValid(state.form.username) ||
-    state.form.checkingUsername ||
-    !state.form.usernameIsAvailable ||
-    !telephoneIsValid(state.form.telephone) ||
-    !passwordIsValid(state.form.password)
+    submitting ||
+    !terms ||
+    !usernameIsValid(username.value) ||
+    username.checking ||
+    !username.available ||
+    !telephoneIsValid(telephone.value) ||
+    !passwordIsValid(password.value)
   );
 }

@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputRightElement,
   Stack,
+  Tooltip,
 } from "@chakra-ui/core";
 import React from "react";
 import { fakeServer } from "./fake-server-api";
@@ -24,7 +25,11 @@ import {
 } from "./form-validation";
 
 export function CreateAccountForm() {
-  const { state, update } = React.useContext(AppState);
+  const {
+    state,
+    update,
+  } = React.useContext(AppState);
+  const { form } = state
   const unsubmitable = React.useMemo(() => selectIsUnsubmitable(state), [
     state,
   ]);
@@ -34,9 +39,9 @@ export function CreateAccountForm() {
       type: "account submitted",
     });
     await fakeServer.createAccount({
-      username: state.form.username,
-      password: state.form.password,
-      telephone: state.form.telephone,
+      username: form.username.value,
+      password: form.password.value,
+      telephone: form.telephone.value,
     });
     update({
       type: "account created",
@@ -51,9 +56,9 @@ export function CreateAccountForm() {
         <InputGroup>
           <Input
             placeholder="Telephone"
-            value={state.form.telephone}
+            value={form.telephone.value}
             isInvalid={
-              state.form.dirty && !telephoneIsValid(state.form.telephone)
+              form.telephone.dirty && !telephoneIsValid(form.telephone.value)
             }
             onChange={(e: any) =>
               void update({
@@ -70,7 +75,7 @@ export function CreateAccountForm() {
       <FormControl>
         <Checkbox
           variantColor="green"
-          isChecked={state.form.terms}
+          isChecked={form.terms}
           onChange={(e) =>
             void update({
               type: "terms checkbox clicked",
@@ -92,7 +97,7 @@ export function CreateAccountForm() {
           size="lg"
           isDisabled={unsubmitable}
           onClick={submit}
-          isLoading={state.form.submitting}
+          isLoading={form.submitting}
           loadingText="Submitting"
         >
           Submit form
@@ -103,8 +108,13 @@ export function CreateAccountForm() {
 }
 
 function Username() {
-  const { state, update } = React.useContext(AppState);
-  const [draftUsername, set] = React.useState(state.form.username);
+  const {
+    state: {
+      form: { username },
+    },
+    update,
+  } = React.useContext(AppState);
+  const [draftUsername, set] = React.useState(username.value);
   const checkUsername = React.useCallback(
     async (username: string) => {
       update({
@@ -126,10 +136,10 @@ function Username() {
     [checkUsername]
   );
   React.useEffect(() => {
-    set(state.form.username);
-  }, [state.form.username]);
+    set(username.value);
+  }, [username.value]);
   React.useEffect(() => {
-    debouncedCheckUsername(draftUsername);
+    if (usernameIsValid(draftUsername)) debouncedCheckUsername(draftUsername);
   }, [draftUsername, debouncedCheckUsername]);
   return (
     <FormControl>
@@ -138,17 +148,29 @@ function Username() {
           placeholder="Username"
           id="username"
           value={draftUsername}
-          isDisabled={state.form.checkingUsername}
-          isInvalid={state.form.dirty && !usernameIsValid(draftUsername)}
+          isDisabled={username.checking}
+          isInvalid={username.dirty && !usernameIsValid(draftUsername)}
           onChange={(e: any) => void set(e.target.value)}
         />
         <InputRightElement>
-          {state.form.checkingUsername ? (
+          {username.checking ? (
             <CircularProgress isIndeterminate size="10px" />
-          ) : !state.form.dirty ? null : state.form.usernameIsAvailable ? (
-            <Icon name="check-circle" color="#2f8a53" />
+          ) : !username.dirty ? null : username.available ? (
+            <Tooltip
+              aria-label="username is available"
+              label="Username is available"
+              placement="auto"
+            >
+              <Icon name="check-circle" color="#2f8a53" />
+            </Tooltip>
           ) : (
-            <Icon name="not-allowed" color="#e22043" />
+            <Tooltip
+              aria-label="username is not available"
+              label="Username is not available"
+              placement="auto"
+            >
+              <Icon name="not-allowed" color="#e22043" />
+            </Tooltip>
           )}
         </InputRightElement>
       </InputGroup>
@@ -157,12 +179,17 @@ function Username() {
 }
 
 function Password() {
-  const { state, update } = React.useContext(AppState);
+  const {
+    state: {
+      form: { password },
+    },
+    update,
+  } = React.useContext(AppState);
   const [showPassword, toggle] = React.useReducer((show) => !show, false);
   return (
     <InputGroup>
       <Input
-        isInvalid={state.form.dirty && !passwordIsValid(state.form.password)}
+        isInvalid={password.dirty && !passwordIsValid(password.value)}
         onChange={(e: any) =>
           void update({
             type: "password field input",
