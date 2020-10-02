@@ -156,7 +156,13 @@ function Username() {
     <FormControl>
       <InputGroup>
         <InputLeftElement>
-          <Icon name="question-outline" />
+          <Tooltip
+            aria-label="Usernames must be unique and a minimum length."
+            label="Usernames must be unique and a minimum length."
+            placement="left"
+          >
+            <Icon name="question-outline" />
+          </Tooltip>
         </InputLeftElement>
         <Input
           placeholder="Username"
