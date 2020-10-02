@@ -151,6 +151,10 @@ function Username() {
     set(username.value);
   }, [username.value]);
   React.useEffect(() => {
+    update({
+      type: "username field input",
+      username: draftUsername,
+    });
     if (usernameIsValid(draftUsername).valid)
       debouncedCheckUsername(draftUsername);
   }, [draftUsername, debouncedCheckUsername]);
@@ -253,13 +257,16 @@ function ErrorLog() {
   } = React.useContext(AppState);
   const errors = React.useMemo(() => {
     const _errors: string[] = [];
-    if (username.dirty && !username.available)
-      _errors.push(
-        "Your username is not available please choose a different username."
-      );
+
     const usernameValidation = usernameIsValid(username.value);
     if (username.dirty && !usernameValidation.valid)
       _errors.push(usernameValidation.reason);
+    else {
+      if (username.dirty && !username.available)
+        _errors.push(
+          "Your username is not available please choose a different username."
+        );
+    }
     const telephoneValidation = telephoneIsValid(telephone.value);
     if (telephone.dirty && !telephoneValidation.valid)
       _errors.push(telephoneValidation.reason);

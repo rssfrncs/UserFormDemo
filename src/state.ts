@@ -35,6 +35,10 @@ export type State = {
 
 export type Event =
   | {
+      type: "username field input";
+      username: string;
+    }
+  | {
       type: "password field input";
       password: string;
     }
@@ -68,6 +72,12 @@ function assertExhaustive(c: never): never {
 export function reducer(state: State, event: Event): State {
   return produce(state, (draft) => {
     switch (event.type) {
+      case "username field input": {
+        if (!event.username) break;
+        if (!draft.form.username.dirty) draft.form.username.dirty = true;
+        draft.form.username.value = event.username;
+        break;
+      }
       case "password field input": {
         if (!draft.form.password.dirty) draft.form.password.dirty = true;
         draft.form.password.value = event.password;
@@ -150,10 +160,10 @@ export function selectIsUnsubmitable(state: State): boolean {
   return (
     submitting ||
     !terms ||
-    !usernameIsValid(username.value) ||
+    !usernameIsValid(username.value).valid ||
     username.checking ||
     !username.available ||
-    !telephoneIsValid(telephone.value) ||
-    !passwordIsValid(password.value)
+    !telephoneIsValid(telephone.value).valid ||
+    !passwordIsValid(password.value).valid
   );
 }
