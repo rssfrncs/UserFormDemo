@@ -15,7 +15,6 @@ export const AppState = React.createContext<AppStateContextProps>(
 
 function App() {
   const [state, update] = React.useReducer(reducer, defaultState());
-  React.useEffect(() => void console.log(JSON.stringify(state, undefined, 2)));
   const memoizedContextValue = React.useMemo(() => ({ state, update }), [
     state,
     update,
